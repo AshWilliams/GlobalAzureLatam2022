@@ -80,7 +80,7 @@ In order to get the value for `MY_EXTERNAL_IP`, you need to get the `external ip
 
 ![external](img/external.jpg)
 
-Based on that command output, the value for `MY_EXTERNAL_IP` should be `52.138.109.161`
+Based on that command output, the value for `MY_EXTERNAL_IP` should be `20.80.222.159`
 
 ## Domain name servers configuration
 
