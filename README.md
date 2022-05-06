@@ -1,0 +1,1 @@
+# GlobalAzureLatam2022
