@@ -90,13 +90,13 @@ In the azure portal, you need to check de `name servers` for the dns zone create
 
 You are going to get and output, something similar to this one:
 ```
-Name server 1: ns1-07.azure-dns.com.
-Name server 2:ns2-07.azure-dns.net.
-Name server 3:ns3-07.azure-dns.org.
-Name server 4:ns4-07.azure-dns.info.
+Name server 1: ns1-09.azure-dns.com.
+Name server 2: ns2-09.azure-dns.net.
+Name server 3: ns3-09.azure-dns.org.
+Name server 4: ns4-09.azure-dns.info.
 ```
 
-Then in the admin pannel of your real domain `bennu.info`, you need to point the DNS servers, to the name servers of your dns zone, like:
+Then in the admin pannel of your real domain `aksdemochile.xyz`, you need to point the DNS servers, to the name servers of your dns zone, like:
 
 ![go](img/go.jpg)
 
