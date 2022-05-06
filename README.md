@@ -207,8 +207,8 @@ spec:
 Run the two demo applications using `kubectl apply`:
 
 ```console
-kubectl apply -f aks-helloworld-one.yaml --namespace ingress-nginx
-kubectl apply -f aks-helloworld-two.yaml --namespace ingress-nginx
+kubectl apply -f service-1.yaml -n ingress-nginx
+kubectl apply -f service-2.yaml -n ingress-nginx
 ```
 
 ## Create an ingress route

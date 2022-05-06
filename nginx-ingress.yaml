@@ -19,7 +19,7 @@ spec:
             name: aks-helloworld-one
             port:
               number: 80
- - host: hello-world-two.aksdemochile.xyz
+  - host: hello-world-two.aksdemochile.xyz
     http:
       paths:        
       - path: /(.*)
