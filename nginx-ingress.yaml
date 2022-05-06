@@ -9,29 +9,23 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt
 spec:
   rules:
-  - host: hello-world-ingress.aksdemochile.xyz
+  - host: hello-world-one.aksdemochile.xyz
     http:
       paths:
-      - path: /hello-world-one(/|$)(.*)
+      - path: /(.*)
         pathType: Prefix
         backend:
           service:
             name: aks-helloworld-one
             port:
               number: 80
-        
-      - path: /hello-world-two(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: aks-helloworld-two
-            port:
-              number: 80
-        
+ - host: hello-world-two.aksdemochile.xyz
+    http:
+      paths:        
       - path: /(.*)
         pathType: Prefix
         backend:
           service:
             name: aks-helloworld-two
             port:
-              number: 80        
+              number: 80  

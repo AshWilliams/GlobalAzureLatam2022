@@ -119,3 +119,141 @@ Then in the admin pannel of your real domain `aksdemochile.xyz`, you need to poi
 > # Display the FQDN
 > az network public-ip show --ids $PUBLICIPID --query "[dnsSettings.fqdn]" --output tsv
 > ```
+
+
+
+## Run demo applications
+
+An ingress controller and a certificate management solution have been configured. Now let's run two demo applications in your AKS cluster. In this example, Helm is used to deploy two instances of a simple *Hello world* application.
+
+To see the ingress controller in action, run two demo applications in your AKS cluster. In this example, you use `kubectl apply` to deploy two instances of a simple *Hello world* application.
+
+Create a *service-1.yaml* file and copy in the following example YAML:
+
+```yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aks-helloworld-one
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aks-helloworld-one
+  template:
+    metadata:
+      labels:
+        app: aks-helloworld-one
+    spec:
+      containers:
+      - name: aks-helloworld-one
+        image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+        ports:
+        - containerPort: 80
+        env:
+        - name: TITLE
+          value: "Ingress NGINX AKS Demo 1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aks-helloworld-one
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: aks-helloworld-one
+```
+
+Create a *service-2.yaml* file and copy in the following example YAML:
+
+```yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aks-helloworld-two
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aks-helloworld-two
+  template:
+    metadata:
+      labels:
+        app: aks-helloworld-two
+    spec:
+      containers:
+      - name: aks-helloworld-two
+        image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+        ports:
+        - containerPort: 80
+        env:
+        - name: TITLE
+          value: "Ingress NGINX AKS Demo 2"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aks-helloworld-two
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: aks-helloworld-two
+```
+
+Run the two demo applications using `kubectl apply`:
+
+```console
+kubectl apply -f aks-helloworld-one.yaml --namespace ingress-nginx
+kubectl apply -f aks-helloworld-two.yaml --namespace ingress-nginx
+```
+
+## Create an ingress route
+
+Both applications are now running on your Kubernetes cluster. However they're configured with a service of type `ClusterIP` and aren't accessible from the internet. To make them publicly available, create a Kubernetes ingress resource. The ingress resource configures the rules that route traffic to one of the two applications.
+
+Create a file named `nginx-ingress.yaml` using below example YAML. Update the *hosts* and *host* to the DNS name you created in a previous step.
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello-world-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  rules:
+  - host: hello-world-one.aksdemochile.xyz
+    http:
+      paths:
+      - path: /(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: aks-helloworld-one
+            port:
+              number: 80
+ - host: hello-world-two.aksdemochile.xyz
+    http:
+      paths:        
+      - path: /(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: aks-helloworld-two
+            port:
+              number: 80        
+      
+```
+
+Create the ingress resource using the `kubectl apply` command.
+
+```console
+kubectl apply -f nginx-ingress.yaml -n ingress-nginx
+```
